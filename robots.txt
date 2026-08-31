@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://ripon.dev/sitemap.xml
+Sitemap: https://riponroydeep-arch.github.io/Ripon_Dev/sitemap.xml
