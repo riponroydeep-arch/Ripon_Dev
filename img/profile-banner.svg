@@ -1,0 +1,48 @@
+<svg width="1600" height="500" viewBox="0 0 1600 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1600" y2="500" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#07111F"/>
+      <stop offset="0.5" stop-color="#0D1B2A"/>
+      <stop offset="1" stop-color="#111827"/>
+    </linearGradient>
+    <linearGradient id="line1" x1="220" y1="80" x2="1180" y2="420" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7C3AED"/>
+      <stop offset="0.5" stop-color="#22D3EE"/>
+      <stop offset="1" stop-color="#34D399"/>
+    </linearGradient>
+    <linearGradient id="line2" x1="120" y1="380" x2="1400" y2="120" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F472B6"/>
+      <stop offset="0.5" stop-color="#38BDF8"/>
+      <stop offset="1" stop-color="#A78BFA"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1600" height="500" rx="28" fill="url(#bg)"/>
+
+  <g opacity="0.18">
+    <circle cx="1300" cy="120" r="220" fill="#22D3EE"/>
+    <circle cx="340" cy="420" r="260" fill="#7C3AED"/>
+  </g>
+
+  <path d="M120 360C260 260 300 170 430 190C520 205 570 270 670 270C760 270 811 222 900 190C1025 145 1110 167 1220 238C1313 299 1392 335 1485 315" stroke="url(#line1)" stroke-width="10" stroke-linecap="round"/>
+  <path d="M80 200C200 130 260 122 360 156C486 198 550 280 680 278C820 275 880 140 1008 130C1124 120 1201 175 1368 220" stroke="url(#line2)" stroke-width="8" stroke-linecap="round" opacity="0.9"/>
+
+  <g>
+    <rect x="120" y="120" width="220" height="12" rx="6" fill="#7C3AED" opacity="0.9"/>
+    <rect x="120" y="152" width="180" height="12" rx="6" fill="#22D3EE" opacity="0.8"/>
+  </g>
+
+  <text x="120" y="250" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="78" font-weight="700" letter-spacing="1.4">RIPON ROY</text>
+  <text x="125" y="318" fill="#B8C5D8" font-family="Segoe UI, Arial, sans-serif" font-size="28" font-weight="500" letter-spacing="4">AUTONOMOUS SYSTEMS • AI ORCHESTRATION</text>
+
+  <g opacity="0.9">
+    <rect x="120" y="360" width="166" height="44" rx="22" fill="#22D3EE"/>
+    <text x="153" y="388" fill="#06121A" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700">FOUNDER</text>
+
+    <rect x="304" y="360" width="210" height="44" rx="22" fill="#7C3AED"/>
+    <text x="337" y="388" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700">TECH LEAD</text>
+
+    <rect x="532" y="360" width="240" height="44" rx="22" fill="#34D399"/>
+    <text x="565" y="388" fill="#06121A" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="700">AI ENGINEER</text>
+  </g>
+</svg>
