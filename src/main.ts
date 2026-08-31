@@ -1,0 +1,43 @@
+import * as THREE from 'three';
+
+declare const lucide: { createIcons: () => void };
+
+type CaseStudy = { title: string; label: string; role: string; problem: string; approach: string; outcome: string; stack: string[] };
+const studies: CaseStudy[] = [
+  { title: 'Agentic AI Company Hierarchy', label: 'Operating model', role: 'Systems strategy / orchestration', problem: 'How might autonomous roles collaborate without losing human accountability?', approach: 'Mapped decision ownership, reporting paths, and feedback loops into a layered operating model that keeps strategic intent visible while work moves quickly.', outcome: 'A reusable framework for thinking about AI-native teams, governance, and operational clarity.', stack: ['Systems design', 'AI strategy', 'Orchestration'] },
+  { title: 'Portfolio as a product', label: 'Product story', role: 'UX direction / frontend', problem: 'How can technical depth become a clear and memorable experience?', approach: 'Created an identity-led interface that uses motion, typography, and interaction to make the work tangible before a visitor reads every word.', outcome: 'A living portfolio foundation that communicates a point of view, not just a list of skills.', stack: ['UX direction', 'Art direction', 'Frontend'] },
+  { title: 'Workflow prototypes', label: 'Prototyping', role: 'AI workflows / JavaScript', problem: 'How do we make automation understandable and trustworthy?', approach: 'Explored task routing, memory structures, feedback loops, and operational interfaces that reveal what a system is doing and why.', outcome: 'A practical pattern library for human-centered automation experiments.', stack: ['JavaScript', 'Automation', 'AI systems'] },
+  { title: 'From signal to software', label: 'Exploration', role: 'Research / product thinking', problem: 'What can physical systems teach us about better digital products?', approach: 'Connected automotive systems, ECU tuning, and electric mobility research with software patterns around feedback, constraints, and control.', outcome: 'A cross-disciplinary lens for designing products that respond to real-world signals.', stack: ['Research', 'Automotive systems', 'Product thinking'] }
+];
+
+const canvas = document.querySelector<HTMLCanvasElement>('#network');
+if (canvas) {
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  const points = Array.from({ length: 70 }, () => new THREE.Vector3((Math.random() - 0.5) * 6, (Math.random() - 0.5) * 7, (Math.random() - 0.5) * 2));
+  scene.add(new THREE.Points(new THREE.BufferGeometry().setFromPoints(points), new THREE.PointsMaterial({ color: 0xc8f04a, size: 0.045, transparent: true, opacity: 0.8 })));
+  const links: THREE.Vector3[] = [];
+  points.forEach((point, index) => points.slice(index + 1).forEach(other => { if (point.distanceTo(other) < 0.8) links.push(point, other); }));
+  scene.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(links), new THREE.LineBasicMaterial({ color: 0x6eddd0, transparent: true, opacity: 0.16 })));
+  camera.position.z = 7;
+  const resize = (): void => { const box = canvas.getBoundingClientRect(); renderer.setSize(box.width, box.height, false); camera.aspect = box.width / box.height; camera.updateProjectionMatrix(); };
+  resize(); window.addEventListener('resize', resize);
+  let mouseX = 0; let mouseY = 0;
+  window.addEventListener('pointermove', event => { mouseX = (event.clientX / innerWidth - 0.5) * 0.3; mouseY = (event.clientY / innerHeight - 0.5) * 0.3; });
+  const animate = (time: number): void => { scene.rotation.y += (mouseX - scene.rotation.y) * 0.025; scene.rotation.x += (mouseY - scene.rotation.x) * 0.025; scene.rotation.z = time * 0.00004; renderer.render(scene, camera); requestAnimationFrame(animate); };
+  requestAnimationFrame(animate);
+}
+
+lucide.createIcons();
+const observer = new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); }), { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(element => observer.observe(element));
+const modal = document.createElement('dialog'); modal.className = 'case-modal'; modal.innerHTML = '<div class="case-dialog"><button class="case-close" type="button">CLOSE</button><div class="eyebrow mono" id="case-label"></div><h2 id="case-title"></h2><div class="case-role" id="case-role"></div><div class="case-section"><h3>The question</h3><p id="case-problem"></p></div><div class="case-section"><h3>The approach</h3><p id="case-approach"></p></div><div class="case-section"><h3>What it creates</h3><p id="case-outcome"></p></div><div class="case-section"><h3>Focus</h3><div class="case-stack" id="case-stack"></div></div></div>'; document.body.appendChild(modal);
+const openCase = (study: CaseStudy): void => { (document.querySelector('#case-label') as HTMLElement).textContent = study.label; (document.querySelector('#case-title') as HTMLElement).textContent = study.title; (document.querySelector('#case-role') as HTMLElement).textContent = study.role; (document.querySelector('#case-problem') as HTMLElement).textContent = study.problem; (document.querySelector('#case-approach') as HTMLElement).textContent = study.approach; (document.querySelector('#case-outcome') as HTMLElement).textContent = study.outcome; (document.querySelector('#case-stack') as HTMLElement).innerHTML = study.stack.map(item => `<span>${item}</span>`).join(''); modal.showModal(); };
+document.querySelectorAll<HTMLElement>('.work').forEach((card, index) => { card.tabIndex = 0; card.setAttribute('role', 'button'); const activate = (): void => openCase(studies[index]); card.addEventListener('click', activate); card.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); activate(); } }); });
+modal.querySelector('.case-close')?.addEventListener('click', () => modal.close()); modal.addEventListener('click', event => { if (event.target === modal) modal.close(); });
+const nav = document.querySelector<HTMLElement>('nav');
+const mobileToggle = document.createElement('button'); mobileToggle.className = 'mobile-toggle'; mobileToggle.type = 'button'; mobileToggle.setAttribute('aria-label', 'Toggle navigation'); mobileToggle.setAttribute('aria-expanded', 'false'); mobileToggle.innerHTML = '<span></span><span></span><span></span>'; nav?.parentElement?.insertBefore(mobileToggle, nav);
+const navStyle = document.createElement('style'); navStyle.textContent = '.mobile-toggle{display:none;border:1px solid var(--line);background:transparent;padding:9px;width:42px;height:38px}.mobile-toggle span{display:block;width:18px;height:1px;background:var(--cream);margin:4px auto;transition:.2s}@media(max-width:760px){.mobile-toggle{display:block}header.topbar{position:relative}header.topbar nav{position:absolute;top:70px;left:0;right:0;display:none;flex-direction:column;align-items:stretch;gap:0;padding:12px;background:rgba(7,16,24,.97);border:1px solid var(--line);z-index:10}header.topbar nav.open{display:flex}header.topbar nav a{display:block;padding:15px 12px;border-bottom:1px solid var(--line)}header.topbar nav a:last-child{border-bottom:0;text-align:center;margin-top:8px}.mobile-toggle[aria-expanded=true] span:first-child{transform:translateY(5px) rotate(45deg)}.mobile-toggle[aria-expanded=true] span:nth-child(2){opacity:0}.mobile-toggle[aria-expanded=true] span:last-child{transform:translateY(-5px) rotate(-45deg)}}nav a.active{color:var(--acid)}'; document.head.appendChild(navStyle);
+const closeMobileNav = (): void => { nav?.classList.remove('open'); mobileToggle.setAttribute('aria-expanded', 'false'); }; mobileToggle.addEventListener('click', () => { const isOpen = nav?.classList.toggle('open') ?? false; mobileToggle.setAttribute('aria-expanded', String(isOpen)); }); nav?.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMobileNav)); document.addEventListener('click', event => { if (nav?.classList.contains('open') && !nav.contains(event.target as Node) && event.target !== mobileToggle) closeMobileNav(); });
+const sectionLinks = [...document.querySelectorAll<HTMLAnchorElement>('nav a[href^="#"]')]; const sectionObserver = new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) sectionLinks.forEach(link => link.classList.toggle('active', link.getAttribute('href') === `#${entry.target.id}`)); }), { rootMargin: '-35% 0px -55% 0px' }); document.querySelectorAll('main section[id]').forEach(section => sectionObserver.observe(section));
