@@ -1,0 +1,45 @@
+Executive Leadership
+
+Human CEO (Chief Executive Officer) / AI CEO
+
+CFO (Chief Financial Officer) / AI CFO
+
+COO (Chief Operating Officer) / AI COO
+
+CDO (Chief Data Officer) / AI CDO
+
+CHRO (Chief Human Resources Officer) / AI CHRO
+
+Management Level
+
+Finance Manager
+
+Operations Manager
+
+Data Manager
+
+Specialized & Operational Functions (AI / Automated Roles)
+
+Workflow Orchestration
+
+Supply & Operations Analytics
+
+Data Quality
+
+Skills Mapping
+
+Additional Common Core AI Roles (in standard AI enterprise structures):
+
+Chief AI Officer (CAIO) / VP of AI
+
+AI Research Scientist (LLM/Foundation Models)
+
+Machine Learning Engineer
+
+Data Engineer / Architect
+
+MLOps Engineer (Machine Learning Operations)
+
+AI Product Manager
+
+AI Ethics & Governance Specialist

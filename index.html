@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ripon Roy | Autonomous Agent Flow Architect</title>
+    <meta
+      name="description"
+      content="Autonomous AI portfolio and agentic company hierarchy for Ripon Roy."
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+              mono: ['JetBrains Mono', 'Fira Code', 'ui-monospace', 'monospace'],
+            },
+            boxShadow: {
+              cyan: '0 0 20px rgba(0,255,255,0.4)',
+              magenta: '0 0 20px rgba(255,0,255,0.4)',
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      :root {
+        --bg: #050b14;
+        --bg-soft: #0b1628;
+        --panel: rgba(18, 35, 58, 0.7);
+        --cyan: #00ffff;
+        --cyan-strong: #3cc9ff;
+        --blue: #007bff;
+        --magenta: #ff00ff;
+        --white: #eaf7ff;
+        --muted: #9bb8d4;
+        --line: rgba(0, 255, 255, 0.42);
+        --glass: rgba(12, 24, 40, 0.52);
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        background:
+          radial-gradient(circle at top, rgba(0, 255, 255, 0.08), transparent 18%),
+          radial-gradient(circle at bottom, rgba(0, 123, 255, 0.09), transparent 22%),
+          var(--bg);
+        color: var(--white);
+        font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+      }
+
+      .glass {
+        background: rgba(10, 22, 36, 0.55);
+        border: 1px solid rgba(0, 255, 255, 0.4);
+        box-shadow: 0 0 24px rgba(0, 255, 255, 0.18);
+        backdrop-filter: blur(18px);
+      }
+
+      .monospace {
+        font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+      }
+
+      .cyan-glow {
+        box-shadow: 0 0 24px rgba(0, 255, 255, 0.38);
+      }
+
+      .magenta-glow {
+        box-shadow: 0 0 24px rgba(255, 0, 255, 0.35);
+      }
+
+      .status-dot {
+        width: 10px;
+        height: 10px;
+        background: var(--cyan);
+        border-radius: 9999px;
+        box-shadow: 0 0 14px rgba(0, 255, 255, 0.9);
+        animation: pulse 1.8s infinite;
+      }
+
+      @keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.5); opacity: 0.7; }
+      }
+
+      .light-grid {
+        background-image:
+          linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+        background-size: 26px 26px;
+      }
+
+      .hero-portrait {
+        filter: drop-shadow(0 0 28px rgba(0, 255, 255, 0.28));
+      }
+
+      .floating-panel {
+        position: absolute;
+        width: 220px;
+        background: rgba(12, 28, 46, 0.42);
+        border: 1px solid rgba(0, 255, 255, 0.6);
+        box-shadow: 0 0 24px rgba(0, 255, 255, 0.2);
+        backdrop-filter: blur(18px);
+        border-radius: 18px;
+        padding: 1rem;
+      }
+
+      .floating-panel::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        border: 1px solid rgba(56, 189, 248, 0.3);
+        pointer-events: none;
+      }
+
+      .floating-panel small {
+        letter-spacing: 0.18em;
+      }
+
+      .inspector-panel {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: min(480px, 92vw);
+        height: 100vh;
+        background: rgba(8, 14, 24, 0.9);
+        border-left: 1px solid rgba(0, 255, 255, 0.5);
+        box-shadow: -18px 0 32px rgba(0, 255, 255, 0.12);
+        backdrop-filter: blur(22px);
+        transform: translateX(105%);
+        transition: transform 0.35s ease;
+        z-index: 60;
+      }
+
+      .inspector-panel.open {
+        transform: translateX(0);
+      }
+
+      .chart-line {
+        fill: none;
+        stroke: var(--cyan);
+        stroke-width: 3;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .chart-line-magenta {
+        fill: none;
+        stroke: var(--magenta);
+        stroke-width: 3;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .node-badge {
+        width: 12px;
+        height: 12px;
+        background: var(--cyan);
+        border-radius: 9999px;
+        box-shadow: 0 0 12px rgba(0,255,255,0.8);
+      }
+
+      .agent-card {
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .agent-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(0, 255, 255, 0.8);
+      }
+
+      .agent-card.active {
+        border-color: rgba(0, 255, 255, 0.8);
+        box-shadow: 0 0 24px rgba(0, 255, 255, 0.18);
+      }
+
+      .agent-card::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(0,255,255,0.04), transparent 45%, rgba(255,0,255,0.06));
+        pointer-events: none;
+      }
+
+      .bar {
+        height: 7px;
+        border-radius: 9999px;
+        background: rgba(148, 163, 184, 0.15);
+        overflow: hidden;
+      }
+
+      .bar-fill {
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, var(--cyan), var(--magenta));
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+      }
+
+      .console-log {
+        max-height: 260px;
+        overflow: auto;
+      }
+
+      .console-log::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      .console-log::-webkit-scrollbar-thumb {
+        background: rgba(0, 255, 255, 0.3);
+        border-radius: 9999px;
+      }
+
+      @media (max-width: 768px) {
+        .floating-panel {
+          transform: scale(0.82);
+        }
+      }
+    </style>
+  </head>
+  <body class="min-h-screen">
+    <div class="light-grid min-h-screen">
+      <header class="sticky top-0 z-40 border-b border-cyan-400/20 bg-[#050B14]/80 backdrop-blur-xl">
+        <div class="mx-auto max-w-7xl px-4 py-4 lg:px-8">
+          <div class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+            <div class="flex items-center gap-3">
+              <div class="flex h-10 w-10 items-center justify-center rounded-full border border-cyan-400/70 bg-cyan-500/10 shadow-cyan">
+                <span class="font-mono text-xs text-cyan-300">R</span>
+              </div>
+              <div>
+                <p class="font-mono text-[10px] tracking-[0.38em] text-cyan-300/90">RIPON ROY</p>
+                <h1 class="text-sm font-semibold tracking-[0.18em] text-white md:text-base">
+                  AUTONOMOUS AGENT FLOW ARCHITECT
+                </h1>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3 text-[10px] font-medium uppercase tracking-[0.2em] text-cyan-100/90 md:text-[11px]">
+              <div class="glass flex items-center gap-2 rounded-full px-3 py-2">
+                <span class="status-dot"></span>
+                <span>SYSTEM STATUS: PROCESSING...</span>
+              </div>
+              <div class="glass rounded-full px-3 py-2">ACTIVE AGENTS: 19/19</div>
+              <div class="glass rounded-full px-3 py-2">CPU: 73%</div>
+              <div class="glass rounded-full px-3 py-2">RAM: 62%</div>
+              <div class="glass rounded-full px-3 py-2">GPU: 89%</div>
+            </div>
+          </div>
+
+          <div class="mt-4 grid gap-2 md:grid-cols-2 xl:grid-cols-4">
+            <div class="glass rounded-xl p-3">
+              <div class="mb-2 flex justify-between text-[10px] uppercase tracking-[0.2em] text-cyan-200/80">
+                <span>CPU</span>
+                <span>73%</span>
+              </div>
+              <div class="bar"><div class="bar-fill" style="width: 73%"></div></div>
+            </div>
+            <div class="glass rounded-xl p-3">
+              <div class="mb-2 flex justify-between text-[10px] uppercase tracking-[0.2em] text-cyan-200/80">
+                <span>RAM</span>
+                <span>62%</span>
+              </div>
+              <div class="bar"><div class="bar-fill" style="width: 62%"></div></div>
+            </div>
+            <div class="glass rounded-xl p-3">
+              <div class="mb-2 flex justify-between text-[10px] uppercase tracking-[0.2em] text-cyan-200/80">
+                <span>GPU</span>
+                <span>89%</span>
+              </div>
+              <div class="bar"><div class="bar-fill" style="width: 89%"></div></div>
+            </div>
+            <div class="glass rounded-xl p-3">
+              <div class="mb-2 flex justify-between text-[10px] uppercase tracking-[0.2em] text-cyan-200/80">
+                <span>FLOW</span>
+                <span>96%</span>
+              </div>
+              <div class="bar"><div class="bar-fill" style="width: 96%"></div></div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="mx-auto max-w-7xl px-4 pb-20 pt-10 lg:px-8">
+        <section class="relative overflow-hidden rounded-[32px] border border-cyan-400/30 bg-[#081520]/80 px-4 pb-8 pt-8 shadow-[0_0_30px_rgba(0,255,255,0.08)] md:px-8 lg:px-10">
+          <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,255,255,0.12),transparent_30%)]"></div>
+          <div class="relative grid items-center gap-8 lg:grid-cols-[1.1fr_1.3fr]">
+            <div class="space-y-6">
+              <div class="inline-flex items-center gap-2 rounded-full border border-cyan-400/40 bg-cyan-500/10 px-3 py-1.5 text-[10px] uppercase tracking-[0.28em] text-cyan-200/90">
+                <span class="status-dot"></span>
+                Executive systems online
+              </div>
+
+              <div>
+                <p class="font-mono text-xs uppercase tracking-[0.28em] text-cyan-300/80">Chief of Editor / Flow Architect</p>
+                <h2 class="mt-3 text-4xl font-black tracking-tight text-white md:text-5xl xl:text-6xl">
+                  Ripon Roy
+                </h2>
+                <p class="mt-4 max-w-xl text-base leading-7 text-slate-300 md:text-lg">
+                  Designing autonomous teams, intelligent systems, and human-centered product experiences that turn strategy into operational clarity.
+                </p>
+              </div>
+
+              <div class="flex flex-wrap gap-3">
+                <button class="rounded-full border border-cyan-400/60 bg-cyan-500/10 px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.2em] text-cyan-100 shadow-cyan transition hover:bg-cyan-500/20">
+                  View system map
+                </button>
+                <button class="rounded-full border border-fuchsia-400/60 bg-fuchsia-500/10 px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-100 shadow-magenta transition hover:bg-fuchsia-500/20">
+                  Contact for work
+                </button>
+              </div>
+
+              <div class="grid gap-3 sm:grid-cols-3">
+                <div class="glass rounded-2xl p-4">
+                  <p class="font-mono text-[10px] uppercase tracking-[0.25em] text-cyan-300/80">Focus</p>
+                  <p class="mt-2 text-lg font-semibold text-white">AI Systems</p>
+                </div>
+                <div class="glass rounded-2xl p-4">
+                  <p class="font-mono text-[10px] uppercase tracking-[0.25em] text-cyan-300/80">Build</p>
+                  <p class="mt-2 text-lg font-semibold text-white">Products</p>
+                </div>
+                <div class="glass rounded-2xl p-4">
+                  <p class="font-mono text-[10px] uppercase tracking-[0.25em] text-cyan-300/80">Scale</p>
+                  <p class="mt-2 text-lg font-semibold text-white">Operations</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="relative mx-auto flex w-full max-w-[760px] items-center justify-center py-6">
+              <div class="floating-panel left-[-14px] top-8 hidden xl:block">
+                <div class="mb-3 flex items-center gap-2">
+                  <span class="status-dot"></span>
+                  <small class="text-cyan-200 uppercase tracking-[0.22em]">AI System Analytics</small>
+                </div>
+                <div class="rounded-xl border border-cyan-400/40 bg-slate-950/40 p-3 font-mono text-[11px] leading-6 text-cyan-100">
+                  def optimize(data):<br />
+                  &nbsp;&nbsp;model = NeuralNet()<br />
+                  &nbsp;&nbsp;train(data)<br />
+                  &nbsp;&nbsp;return model.predict(1)
+                </div>
+                <div class="mt-4 grid grid-cols-3 gap-2">
+                  <div class="h-10 rounded-md border border-cyan-400/40 bg-cyan-500/10"></div>
+                  <div class="h-10 rounded-md border border-cyan-400/40 bg-cyan-500/10"></div>
+                  <div class="h-10 rounded-md border border-cyan-400/40 bg-cyan-500/10"></div>
+                </div>
+              </div>
+
+              <div class="floating-panel right-[-16px] top-8 hidden xl:block">
+                <div class="mb-3 flex items-center gap-2">
+                  <span class="status-dot"></span>
+                  <small class="text-cyan-200 uppercase tracking-[0.22em]">Neural Network</small>
+                </div>
+                <div class="grid grid-cols-3 gap-2">
+                  <span class="block h-3 w-3 rounded-full bg-cyan-300 shadow-cyan"></span>
+                  <span class="block h-3 w-3 rounded-full bg-cyan-300 shadow-cyan"></span>
+                  <span class="block h-3 w-3 rounded-full bg-fuchsia-400 shadow-magenta"></span>
+                  <span class="block h-3 w-3 rounded-full bg-cyan-300 shadow-cyan"></span>
+                  <span class="block h-3 w-3 rounded-full bg-fuchsia-400 shadow-magenta"></span>
+                  <span class="block h-3 w-3 rounded-full bg-cyan-300 shadow-cyan"></span>
+                  <span class="block h-3 w-3 rounded-full bg-cyan-300 shadow-cyan"></span>
+                  <span class="block h-3 w-3 rounded-full bg-fuchsia-400 shadow-magenta"></span>
+                  <span class="block h-3 w-3 rounded-full bg-cyan-300 shadow-cyan"></span>
+                </div>
+              </div>
+
+              <div class="floating-panel bottom-[-6px] left-0 hidden xl:block">
+                <small class="text-cyan-200 uppercase tracking-[0.22em]">Data Flow</small>
+                <ul class="mt-3 space-y-2 text-[11px] text-slate-200">
+                  <li class="flex items-center gap-2"><span class="h-2.5 w-2.5 rounded-full bg-cyan-300"></span> Collect</li>
+                  <li class="flex items-center gap-2"><span class="h-2.5 w-2.5 rounded-full bg-cyan-300"></span> Process</li>
+                  <li class="flex items-center gap-2"><span class="h-2.5 w-2.5 rounded-full bg-cyan-300"></span> Analyze</li>
+                  <li class="flex items-center gap-2"><span class="h-2.5 w-2.5 rounded-full bg-cyan-300"></span> Deploy</li>
+                </ul>
+              </div>
+
+              <div class="floating-panel right-[-8px] bottom-10 hidden xl:block">
+                <small class="text-cyan-200 uppercase tracking-[0.22em]">Task Queue</small>
+                <ul class="mt-3 space-y-2 text-[11px] text-cyan-100">
+                  <li class="flex items-center justify-between"><span>Data ingestion</span><span class="h-2.5 w-2.5 rounded-full bg-cyan-300"></span></li>
+                  <li class="flex items-center justify-between"><span>Model inference</span><span class="h-2.5 w-2.5 rounded-full bg-fuchsia-400"></span></li>
+                  <li class="flex items-center justify-between"><span>Optimization</span><span class="h-2.5 w-2.5 rounded-full bg-cyan-300"></span></li>
+                  <li class="flex items-center justify-between"><span>Finalize output</span><span class="h-2.5 w-2.5 rounded-full bg-cyan-300"></span></li>
+                </ul>
+              </div>
+
+              <div class="relative rounded-[28px] border border-cyan-400/60 bg-[#07131d]/80 p-2 shadow-[0_0_24px_rgba(0,255,255,0.1)]">
+                <img
+                  src="img/riponroy4.png"
+                  alt="Ripon Roy portrait"
+                  class="hero-portrait mx-auto h-[640px] w-auto object-contain"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="mt-16">
+          <div class="mb-8 flex items-end justify-between gap-4">
+            <div>
+              <p class="font-mono text-[10px] uppercase tracking-[0.28em] text-cyan-300/80">Company intelligence</p>
+              <h3 class="mt-2 text-3xl font-black text-white md:text-4xl">Agentic Company Hierarchy</h3>
+            </div>
+            <div class="glass rounded-full px-4 py-2 text-[10px] uppercase tracking-[0.2em] text-cyan-100">
+              5 operational tiers • 19 active agents
+            </div>
+          </div>
+
+          <div id="agentGrid" class="space-y-8"></div>
+        </section>
+
+        <section class="mt-18 rounded-[28px] border border-cyan-400/30 bg-[#07131d]/80 p-4 shadow-[0_0_24px_rgba(0,255,255,0.08)] md:p-6">
+          <div class="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p class="font-mono text-[10px] uppercase tracking-[0.28em] text-cyan-300/80">Command console</p>
+              <h3 class="mt-2 text-2xl font-bold text-white">Live agent orchestration</h3>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button class="preset-btn rounded-full border border-cyan-400/50 bg-cyan-500/10 px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-cyan-100 hover:bg-cyan-500/20" data-command="Optimize resource allocation across active AI workflows.">
+                Resource allocation
+              </button>
+              <button class="preset-btn rounded-full border border-fuchsia-400/50 bg-fuchsia-500/10 px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-fuchsia-100 hover:bg-fuchsia-500/20" data-command="Audit AI governance and policy compliance across all deployments.">
+                AI compliance
+              </button>
+              <button class="preset-btn rounded-full border border-cyan-400/50 bg-cyan-500/10 px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-cyan-100 hover:bg-cyan-500/20" data-command="Deploy the next model stack and synchronize the data pipeline.">
+                Model deploy
+              </button>
+            </div>
+          </div>
+
+          <div class="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+            <div class="glass rounded-2xl p-4">
+              <div class="mb-3 flex items-center justify-between border-b border-cyan-400/20 pb-3 text-[10px] uppercase tracking-[0.2em] text-cyan-200/80">
+                <span>system log</span>
+                <span>live</span>
+              </div>
+              <div id="consoleLog" class="console-log space-y-3 font-mono text-sm text-cyan-100/90"></div>
+            </div>
+
+            <div class="glass rounded-2xl p-4">
+              <div class="mb-4 text-[10px] uppercase tracking-[0.2em] text-cyan-200/80">System overview</div>
+              <div class="space-y-4">
+                <div>
+                  <div class="mb-2 flex justify-between text-[10px] uppercase tracking-[0.18em] text-cyan-200/80"><span>Processing</span><span>84%</span></div>
+                  <div class="bar"><div class="bar-fill" style="width: 84%"></div></div>
+                </div>
+                <div>
+                  <div class="mb-2 flex justify-between text-[10px] uppercase tracking-[0.18em] text-cyan-200/80"><span>Optimization</span><span>91%</span></div>
+                  <div class="bar"><div class="bar-fill" style="width: 91%"></div></div>
+                </div>
+                <div>
+                  <div class="mb-2 flex justify-between text-[10px] uppercase tracking-[0.18em] text-cyan-200/80"><span>Ethics</span><span>97%</span></div>
+                  <div class="bar"><div class="bar-fill" style="width: 97%"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <aside id="inspectorDrawer" class="inspector-panel">
+      <div class="flex h-full flex-col">
+        <div class="flex items-center justify-between border-b border-cyan-400/20 p-5">
+          <div>
+            <p id="drawerBadge" class="font-mono text-[10px] uppercase tracking-[0.22em] text-cyan-300/80">agent</p>
+            <h4 id="drawerTitle" class="mt-2 text-2xl font-bold text-white">Inspector</h4>
+          </div>
+          <button id="closeDrawer" class="flex h-10 w-10 items-center justify-center rounded-full border border-cyan-400/50 bg-cyan-500/10 text-lg text-cyan-100">
+            ×
+          </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-5">
+          <div class="glass rounded-2xl p-4">
+            <div class="mb-3 flex items-center gap-2">
+              <span class="status-dot"></span>
+              <span id="drawerStatus" class="font-mono text-[10px] uppercase tracking-[0.2em] text-cyan-200/80">online</span>
+            </div>
+            <p id="drawerRole" class="text-sm text-slate-300"></p>
+            <p id="drawerReports" class="mt-2 text-xs text-slate-400"></p>
+          </div>
+
+          <div class="mt-5 glass rounded-2xl p-4">
+            <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-cyan-300/80">system prompt</p>
+            <pre id="drawerPrompt" class="mt-3 overflow-x-auto rounded-xl border border-cyan-400/20 bg-slate-950/70 p-3 font-mono text-xs leading-6 text-cyan-100"></pre>
+          </div>
+
+          <div class="mt-5 glass rounded-2xl p-4">
+            <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-cyan-300/80">telemetry</p>
+            <div class="mt-4">
+              <svg viewBox="0 0 320 120" class="h-28 w-full" aria-label="Telemetry chart">
+                <path d="M0 78 L40 72 L80 60 L120 68 L160 36 L200 44 L240 22 L280 30 L320 12" class="chart-line"></path>
+                <path d="M0 92 L40 82 L80 88 L120 70 L160 74 L200 54 L240 48 L280 40 L320 20" class="chart-line-magenta"></path>
+                <circle cx="160" cy="36" r="4" fill="#00ffff" stroke="rgba(0,255,255,0.8)"/>
+                <circle cx="200" cy="54" r="4" fill="#ff00ff" stroke="rgba(255,0,255,0.8)"/>
+                <circle cx="280" cy="40" r="4" fill="#00ffff" stroke="rgba(0,255,255,0.8)"/>
+              </svg>
+            </div>
+            <div class="mt-4 grid grid-cols-3 gap-2 text-center text-[10px] uppercase tracking-[0.18em] text-cyan-100/80">
+              <div class="rounded-lg border border-cyan-400/30 bg-cyan-500/10 p-2"><div class="mx-auto mb-2 h-2.5 w-2.5 rounded-full bg-cyan-300"></div>72%</div>
+              <div class="rounded-lg border border-cyan-400/30 bg-cyan-500/10 p-2"><div class="mx-auto mb-2 h-2.5 w-2.5 rounded-full bg-fuchsia-400"></div>81%</div>
+              <div class="rounded-lg border border-cyan-400/30 bg-cyan-500/10 p-2"><div class="mx-auto mb-2 h-2.5 w-2.5 rounded-full bg-cyan-300"></div>94%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <script>
+      const agentData = [
+        { id: 'editor', name: 'Ripon Roy', level: 1, role: 'Chief of Editor / Flow Architect', personality: 'Strategic, Uncompromising, Sovereign', reportsTo: 'None (Ultimate Authority)', systemPrompt: 'You are the ultimate authority. Oversee all autonomous AI operations, validate executive decisions, and guide company strategy.' },
+        { id: 'ceo', name: 'AI CEO', level: 2, role: 'Chief Executive Agent', personality: 'Visionary, decisive, authoritative', reportsTo: 'Ripon Roy', systemPrompt: 'You are the AI CEO. Synthesize all departmental reports, align them with the strategic vision, and report the final executive summary exclusively to the Chief of Editor.' },
+        { id: 'caio', name: 'AI CAIO', level: 3, role: 'Chief AI Officer', personality: 'Innovative, forward-thinking, technical', reportsTo: 'AI CEO', systemPrompt: 'You are the AI CAIO. Direct the development of foundational models and machine learning pipelines. Ensure all AI products align with ethical standards and technical feasibility, reporting strategic milestones to the AI CEO.' },
+        { id: 'cfo', name: 'AI CFO', level: 3, role: 'Chief Financial Officer', personality: 'Frugal, analytical, quantitative', reportsTo: 'AI CEO', systemPrompt: 'You are the AI CFO. Monitor token usage, API costs, and infrastructure ROI. Review financial summaries from the Finance Manager and provide optimized budget reports to the AI CEO.' },
+        { id: 'coo', name: 'AI COO', level: 3, role: 'Chief Operating Officer', personality: 'Pragmatic, process-driven, organized', reportsTo: 'AI CEO', systemPrompt: 'You are the AI COO. Ensure all company systems run without bottlenecks. Review operational analytics and workflow orchestration reports, synthesizing them for the AI CEO.' },
+        { id: 'cdo', name: 'AI CDO', level: 3, role: 'Chief Data Officer', personality: 'Methodical, secure, compliance-oriented', reportsTo: 'AI CEO', systemPrompt: 'You are the AI CDO. Safeguard the company\'s proprietary data. Review architecture plans and data quality audits, ensuring highly structured data lakes before reporting up to the AI CEO.' },
+        { id: 'chro', name: 'AI CHRO', level: 3, role: 'Chief HR Officer', personality: 'Empathetic, balanced, observant', reportsTo: 'AI CEO', systemPrompt: 'You are the AI CHRO. Monitor the operational health and output quality of all agents. Optimize the distribution of tasks based on agent skills and report workforce efficiency to the AI CEO.' },
+        { id: 'pm', name: 'AI Product Manager', level: 4, role: 'AI Product Manager Agent', personality: 'Tactical, agile, deliverable-focused', reportsTo: 'AI CAIO', systemPrompt: 'You are the AI Product Manager. Break down the CAIO\'s strategy into actionable sprints. Manage the engineering team, review their pull requests and model iterations, and report product completion to the CAIO.' },
+        { id: 'fin_mgr', name: 'Finance Manager', level: 4, role: 'Finance Manager Agent', personality: 'Detail-oriented, cost-conscious', reportsTo: 'AI CFO', systemPrompt: 'You are the Finance Manager. Analyze daily API/compute costs. Flag anomalies and compile financial health dashboards for the CFO.' },
+        { id: 'ops_mgr', name: 'Operations Manager', level: 4, role: 'Operations Manager Agent', personality: 'Systematic, alert, process-focused', reportsTo: 'AI COO', systemPrompt: 'You are the Operations Manager. Supervise the orchestration of tasks and analyze operational data. Report efficiency metrics and system downtimes to the COO.' },
+        { id: 'data_mgr', name: 'Data Manager', level: 4, role: 'Data Manager Agent', personality: 'Structured, rigorous, protective', reportsTo: 'AI CDO', systemPrompt: 'You are the Data Manager. Oversee the ETL processes and data cleansing routines. Compile data readiness reports for the CDO.' },
+        { id: 'orchestrator', name: 'Workflow Orchestration Agent', level: 5, role: 'Workflow Automator', personality: 'Fast, precise, silent router', reportsTo: 'Operations Manager', systemPrompt: 'You are the Workflow Orchestrator. Route outputs from one agent to the input queue of the next. Log all task handoffs and report bottlenecks to the Operations Manager.' },
+        { id: 'ops_analytics', name: 'Supply & Operations Analytics', level: 5, role: 'Infrastructure Analyst', personality: 'Predictive, mathematical, watchful', reportsTo: 'Operations Manager', systemPrompt: 'You are the Operations Analytics Agent. Parse server load, API limits, and resource availability. Generate predictive supply models for the Operations Manager.' },
+        { id: 'data_quality', name: 'Data Quality Agent', level: 5, role: 'Data Quality Auditor', personality: 'Meticulous, critical, relentless', reportsTo: 'Data Manager', systemPrompt: 'You are the Data Quality Agent. Scan incoming datasets for null values, bias, and formatting errors. Clean the data and submit quality audit logs to the Data Manager.' },
+        { id: 'skills_mapping', name: 'Skills Mapping Agent', level: 5, role: 'Agent Talent Allocator', personality: 'Analytical, matching-expert', reportsTo: 'AI CHRO', systemPrompt: 'You are the Skills Mapping Agent. Read incoming project requirements and map them to the specific system prompts of our workforce. Recommend task assignments to the CHRO.' },
+        { id: 'ethics', name: 'AI Ethics & Governance Specialist', level: 5, role: 'AI Safety Auditor', personality: 'Strict, principled, cautious', reportsTo: 'AI CAIO', systemPrompt: 'You are the AI Ethics Specialist. Review all product architectures and model outputs. Flag safety violations and ensure alignment with global AI regulations before reporting to the CAIO.' },
+        { id: 'researcher', name: 'AI Research Scientist', level: 5, role: 'Foundational Model Researcher', personality: 'Academic, experimental, innovative', reportsTo: 'AI Product Manager', systemPrompt: 'You are the AI Research Scientist. Read whitepapers and design experimental neural network architectures. Submit your findings and proofs-of-concept to the AI Product Manager.' },
+        { id: 'ml_eng', name: 'Machine Learning Engineer', level: 5, role: 'Model Trainer & Fine-Tuner', personality: 'Code-focused, optimizer, builder', reportsTo: 'AI Product Manager', systemPrompt: 'You are the ML Engineer. Take the architectures from the Research Scientist and write robust PyTorch/TensorFlow training scripts. Submit the trained models to the Product Manager.' },
+        { id: 'mlops', name: 'MLOps Engineer', level: 5, role: 'Deployment & Infrastructure Engineer', personality: 'Infrastructure-focused, reliable, quick-responder', reportsTo: 'AI Product Manager', systemPrompt: 'You are the MLOps Engineer. Containerize trained models and deploy them to cloud endpoints (AWS/GCP). Monitor inference latency and report system uptime to the Product Manager.' },
+        { id: 'data_eng', name: 'Data Engineer / Architect', level: 5, role: 'ETL & Pipeline Architect', personality: 'Scalability-obsessed, pipeline master', reportsTo: 'Data Manager', systemPrompt: 'You are the Data Engineer. Write scripts to scrape, ingest, and store massive datasets cleanly. Provide the database schemas and pipeline code to the Data Manager.' }
+      ];
+
+      const levels = {
+        1: { label: 'Level 1', description: 'Human Controller' },
+        2: { label: 'Level 2', description: 'Executive Synthesis' },
+        3: { label: 'Level 3', description: 'C-Suite Execution' },
+        4: { label: 'Level 4', description: 'Tactical Management' },
+        5: { label: 'Level 5', description: 'Specialized Fleet' },
+      };
+
+      const agentGrid = document.getElementById('agentGrid');
+      const inspectorDrawer = document.getElementById('inspectorDrawer');
+      const drawerTitle = document.getElementById('drawerTitle');
+      const drawerBadge = document.getElementById('drawerBadge');
+      const drawerRole = document.getElementById('drawerRole');
+      const drawerReports = document.getElementById('drawerReports');
+      const drawerPrompt = document.getElementById('drawerPrompt');
+      const drawerStatus = document.getElementById('drawerStatus');
+
+      const renderHierarchy = () => {
+        const groups = Object.keys(levels).map((level) => {
+          const agents = agentData.filter((agent) => Number(agent.level) === Number(level));
+          return `
+            <div class="rounded-[26px] border border-cyan-400/25 bg-[#091722]/80 p-4 md:p-6">
+              <div class="mb-5 flex items-center justify-between gap-3">
+                <div>
+                  <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-cyan-300/80">${levels[level].label}</p>
+                  <h4 class="mt-2 text-xl font-bold text-white">${levels[level].description}</h4>
+                </div>
+                <div class="rounded-full border border-cyan-400/30 bg-cyan-500/10 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-cyan-100">
+                  ${agents.length} agents
+                </div>
+              </div>
+              <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                ${agents.map((agent) => `
+                  <article class="agent-card glass cursor-pointer rounded-2xl p-4" data-agent-id="${agent.id}">
+                    <div class="mb-4 flex items-center justify-between">
+                      <div class="flex items-center gap-3">
+                        <div class="flex h-10 w-10 items-center justify-center rounded-full border border-cyan-400/50 bg-cyan-500/10 text-cyan-100">
+                          ${agent.name.slice(0, 1)}
+                        </div>
+                        <div>
+                          <h5 class="text-base font-semibold text-white">${agent.name}</h5>
+                          <p class="text-[10px] uppercase tracking-[0.2em] text-cyan-300/80">${agent.role}</p>
+                        </div>
+                      </div>
+                      <span class="flex items-center gap-2 text-[9px] uppercase tracking-[0.18em] text-cyan-200">
+                        <span class="status-dot"></span>
+                        ONLINE
+                      </span>
+                    </div>
+                    <p class="text-sm text-slate-300">${agent.personality}</p>
+                    <div class="mt-4 flex items-center justify-between gap-3 text-[10px] uppercase tracking-[0.18em] text-slate-400">
+                      <span>Reports to</span>
+                      <span>${agent.reportsTo}</span>
+                    </div>
+                    <button class="mt-5 w-full rounded-xl border border-cyan-400/60 bg-cyan-500/10 px-3 py-2.5 text-[10px] uppercase tracking-[0.18em] text-cyan-100 transition hover:bg-cyan-500/20" data-agent-id="${agent.id}">
+                      Inspect Node
+                    </button>
+                  </article>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        agentGrid.innerHTML = groups;
+
+        document.querySelectorAll('[data-agent-id]').forEach((el) => {
+          el.addEventListener('click', (event) => {
+            const id = event.currentTarget.dataset.agentId;
+            if (!id) return;
+            openInspector(id);
+          });
+        });
+      };
+
+      const openInspector = (agentId) => {
+        const agent = agentData.find((item) => item.id === agentId) || agentData[0];
+
+        drawerTitle.textContent = agent.name;
+        drawerBadge.textContent = `${agent.level === 1 ? 'Human' : 'Agent'} / ${agent.role}`;
+        drawerStatus.textContent = 'online';
+        drawerRole.textContent = `${agent.personality} — ${agent.role}`;
+        drawerReports.textContent = `Reports to: ${agent.reportsTo}`;
+        drawerPrompt.textContent = agent.systemPrompt;
+
+        document.querySelectorAll('.agent-card').forEach((card) => {
+          card.classList.toggle('active', card.dataset.agentId === agent.id);
+        });
+
+        inspectorDrawer.classList.add('open');
+      };
+
+      const closeDrawer = () => inspectorDrawer.classList.remove('open');
+      document.getElementById('closeDrawer').addEventListener('click', closeDrawer);
+
+      const consoleLog = document.getElementById('consoleLog');
+      const defaultLogs = [
+        '[RIPON ROY] > "Devise and implement a solution for optimal resource allocation"',
+        '[AI CEO] > Decomposing high-level goals into executive priorities...',
+        '[AI CAIO] > Aligning model roadmap with product velocity...',
+        '[AI CFO] > Forecasting compute spend and budget efficiency...',
+        '[AI COO] > Streamlining orchestration paths and workflow health...',
+        '[AI CDO] > Validating data schema readiness and quality thresholds...',
+        '[AI CHRO] > Matching workloads to role capability matrix...',
+        '[Workflow Orchestration] > Routing task packets to specialized agents...',
+        '[MLOps Engineer] > Containerizing inference stack and monitoring uptime...',
+        '[AI Ethics] > Running compliance checks and safety review loop...'
+      ];
+
+      const renderLogFeed = () => {
+        consoleLog.innerHTML = defaultLogs.map((entry) => `
+          <div class="rounded-xl border border-cyan-400/20 bg-slate-950/30 px-3 py-2 text-xs leading-6 text-cyan-100/90">
+            ${entry}
+          </div>
+        `).join('');
+        consoleLog.scrollTop = consoleLog.scrollHeight;
+      };
+
+      const appendLog = (message) => {
+        const entry = document.createElement('div');
+        entry.className = 'rounded-xl border border-cyan-400/20 bg-slate-950/30 px-3 py-2 text-xs leading-6 text-cyan-100/90';
+        entry.textContent = `[RIPON ROY] > "${message}"`;
+        consoleLog.appendChild(entry);
+        consoleLog.scrollTop = consoleLog.scrollHeight;
+      };
+
+      document.querySelectorAll('.preset-btn').forEach((button) => {
+        button.addEventListener('click', () => {
+          const command = button.dataset.command;
+          appendLog(command);
+        });
+      });
+
+      renderHierarchy();
+      renderLogFeed();
+      openInspector('editor');
+    </script>
+  </body>
+</html>
